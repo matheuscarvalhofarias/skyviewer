@@ -1,0 +1,39 @@
+#workspace #drawer.model3d-drawer{width:min(420px,calc(100vw - 100px))}
+.model3d-sample{margin-top:17px!important}.model3d-credit{display:block;font-size:10px;color:#62728b;margin-top:10px;text-decoration:none}.model3d-credit:hover{text-decoration:underline}
+.model3d-building-toggle{display:flex!important;align-items:center;gap:8px;font-size:12px!important;margin:17px 0!important;color:#465c79}
+.model3d-building-toggle input{accent-color:#b32a49;width:16px;height:16px}
+#drawer .model3d-status{font-size:12px!important;line-height:1.6;color:#526881}
+.model3d-pick-hint{padding:15px;border-radius:9px;border:1px solid #dcb6c1;background:#fff3f6;font-size:13px;color:#84334a}.model3d-pick-hint p{font-size:12px!important}
+.model3d-item-title{display:flex;justify-content:space-between;align-items:center;gap:10px}
+#workspace #drawer button.model3d-remove{font-size:11px;color:#a23b55;padding:8px 0 0;width:auto}
+#drawer .model3d-building-ref{font-size:11px!important;color:#7e5969!important}
+.model3d-dialog{width:min(770px,calc(100vw - 32px));padding:25px;background:#f7f8fa}
+.model3d-dialog>p{font-size:13px;margin-bottom:22px}
+.model3d-dialog .sec-form label{font-size:12px;font-weight:550;color:#425977;margin:0 0 6px;display:block}
+.model3d-dialog .sec-form input{background:#fff;color:#283d5a;border-color:#c4d0e1;min-height:42px;caret-color:auto;font-size:13px}
+.model3d-dialog .sec-form input[type=file]{font-size:12px}.model3d-dialog .sec-form small{display:block;font-size:11px;line-height:1.6;color:#62768e;margin-top:7px}
+.model3d-preview{height:250px;min-width:0;background:#eef2f7;border:1px solid #d1dce9;border-radius:10px;overflow:hidden;position:relative;display:grid;place-items:center}
+.model3d-preview canvas{width:100%;height:100%;display:block;touch-action:none}.model3d-preview p{font-size:13px;color:#6b7e98;padding:20px;text-align:center}
+.model3d-dialog .model3d-preview-help{margin:-5px 0 0;text-align:right}
+.model3d-dialog .model3d-form-error{font-size:12px;color:#9e3550;margin:0;min-height:18px}
+.model3d-dialog .model3d-form-error:empty{display:none}
+.model3d-location{padding:18px;border:1px solid #d8e0e9;border-radius:11px;background:#fff;display:grid;gap:16px}
+.model3d-positioning{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0}
+.model3d-location-copy{min-width:0}.model3d-dialog .model3d-location-copy p{font-size:12px;line-height:1.5;margin:5px 0 0;color:#617086}
+.model3d-dialog button.model3d-pick-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:none;width:auto;min-height:42px;padding:10px 14px;white-space:nowrap;background:#f7f8fa;font-weight:600}
+.model3d-dialog button.model3d-pick-button:hover{background:#fceef2;border-color:#c88c9c;color:#a52b47}
+.model3d-pick-icon{display:grid;place-items:center;width:18px;height:18px;font-size:22px;line-height:1}
+.model3d-dialog .model3d-location>small{margin:0}
+.model3d-preview.is-empty{height:120px;border-style:dashed;background:#f1f4f8}.model3d-preview-help[hidden]{display:none!important}
+.model3d-adjustments{border:1px solid #d8e0e9;border-radius:10px;background:#fff;padding:0 16px}
+.model3d-adjustments summary{padding:15px 0;cursor:pointer;font-size:13px;font-weight:600;color:#324b6c}
+.model3d-adjustments>.model3d-fields{padding:2px 0 17px}
+.model3d-dialog .model3d-positioning h3,.model3d-dialog .sec-form>h3{font-size:14px;margin:0;color:#324b6c}
+.model3d-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.model3d-selected-building{border:1px solid #e2c6d0;border-radius:7px;background:#fff4f7;color:#8f4058;padding:11px;font-size:12px;line-height:1.5}
+.model3d-editor-actions{display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #dae3ed;padding:16px 0;margin:5px 0 -13px;position:sticky;bottom:-25px;background:#f7f8fa;z-index:2;box-shadow:0 -10px 15px #f7f8fae8}
+.model3d-dialog .model3d-editor-actions button{min-height:42px;padding:10px 18px;font-weight:600}
+.model3d-dialog .sec-form input:focus-visible{outline:2px solid #b32a49;outline-offset:2px}
+@media(max-width:600px){.model3d-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.model3d-positioning{align-items:stretch;flex-direction:column;gap:12px}.model3d-dialog button.model3d-pick-button{width:100%}.model3d-location{padding:14px}.model3d-dialog{padding:18px}.model3d-preview{height:200px}.model3d-editor-actions{bottom:-18px}.model3d-location .model3d-fields>div:last-child{grid-column:1/-1}}
+
+.model3d-library{padding:12px 0 0;font-size:12px;color:#5c708b}.model3d-library>summary{cursor:pointer;color:#5d708b}.model3d-library .model3d-sample{margin-top:12px!important}

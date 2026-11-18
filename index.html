@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HEX360 · Acesso</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#081218;color:#f3f9fa;font:15px "Segoe UI",Arial,sans-serif}button,input{font:inherit}button{cursor:pointer}header,footer{position:absolute;left:5%;right:5%;display:flex;align-items:center;justify-content:space-between;z-index:2}header{top:32px}.brand{display:flex;align-items:center;gap:12px;font-weight:650;font-size:24px;letter-spacing:-1px}.brand svg{width:37px;color:#7ee7cb}.tag,footer,.caption{font:11px Consolas,monospace;letter-spacing:1.4px;color:#97b3bb}.tag{border:1px solid #34484e;padding:8px 13px;border-radius:25px}.tag:before{content:"";display:inline-block;width:6px;height:6px;background:#86e4cb;border-radius:50%;margin-right:9px}main{position:relative;min-height:100svh;display:grid;grid-template-columns:55% 45%;align-items:center;overflow:hidden;background:radial-gradient(ellipse at 29% 43%,#103238 0,transparent 49%)}.world{position:relative;height:min(70vw,76svh);min-height:350px;display:grid;place-items:center}.world canvas#earth,#map{position:absolute;width:100%;height:100%;inset:0}#map{opacity:1}.caption{position:absolute;bottom:0;display:flex;align-items:center;gap:12px}.spin{background:#11272d;border:1px solid #3b5b62;color:#a6d3d0;width:30px;height:30px;border-radius:50%}.panel{position:relative;width:min(380px,85%);justify-self:center;margin-right:8%}.accent{width:30px;height:3px;background:#7be3c7;margin-bottom:25px}h1{font-size:clamp(34px,3.5vw,54px);letter-spacing:-2.4px;line-height:1.07;margin:0 0 12px;font-weight:570}p{color:#a2b5ba;line-height:1.55;margin:0 0 32px}label{display:block;margin:19px 0 9px;font-weight:540}.field{position:relative}.field input{width:100%;height:48px;border:1px solid #3a4a52;border-radius:7px;background:#101e25;color:white;padding:0 15px}.field input:focus{outline:2px solid #78d7c0;outline-offset:2px}.field input::placeholder{color:#789099}.field input[type=password],#password{padding-right:50px}.eye{position:absolute;right:4px;top:4px;height:40px;width:42px;color:#aec3c8;background:transparent;border:0}.eye svg{width:19px;vertical-align:middle}.submit{border:0;background:#85e7cc;color:#0a2724;font-weight:650;width:100%;height:49px;margin-top:26px;border-radius:7px}.submit:hover{background:#a1f3dc}.submit span{float:right;margin-right:12px}.access-link{display:block;margin:17px auto 0;background:transparent;color:#aec8ca;border:0;text-decoration:underline;text-underline-offset:4px}footer{bottom:22px;border-top:1px solid #263940;padding-top:14px;font-size:10px}.hidden,[hidden]{display:none!important}@media(max-width:730px){main{display:flex;flex-direction:column;justify-content:center;padding:95px 22px 92px}.world{min-height:0;width:100%;height:180px;margin:-18px 0 20px}.caption{right:4px;bottom:0}.caption span{display:none}.panel{width:min(100%,390px);margin:0}.accent{display:none}header{top:20px}footer{bottom:15px}h1{font-size:36px}p{margin-bottom:19px}}@media(max-height:560px) and (min-width:731px){main{padding:90px 0}.world{min-height:240px}}
+main {display:grid;grid-template-columns:1fr;place-items:center;padding:90px 20px;min-height:100svh;background:#061320}
+.world {position:absolute;inset:0;width:100%;height:100%;min-height:0;margin:0}
+#map::after {content:"";position:absolute;inset:0;background:rgb(0 0 0 / 28%);pointer-events:none}
+.field input:focus {outline-color:#bb2743}
+.world:after {content:"";position:absolute;inset:0;pointer-events:none;background-image:var(--stars);mask-image:radial-gradient(circle at center,transparent var(--clear-radius),black calc(var(--clear-radius) + 8px))}
+.panel {width:min(404px,100%);margin:0;padding:32px;background:#fafafa;color:#232323;border:1px solid #dedede;border-radius:15px;box-shadow:0 18px 65px #00162155}
+.panel p {color:#595959;font-size:14px;margin-bottom:24px}
+.panel h1 {font-size:34px;letter-spacing:-1.5px}
+.field input {background:white;border-color:#c3c3c3;color:#132c32}
+.eye,.access-link {color:#545454}
+.submit {background:#be2945;color:white}
+.submit:hover {background:#9c2039}
+.accent {background:#be2945;display:block;margin-bottom:18px}
+.caption {position:absolute;bottom:40px;right:5%;z-index:2}
+footer {display:none}
+header {pointer-events:none}
+#mapStatus {align-self:end;margin-bottom:85px}
+@media(max-width:730px){.panel{padding:25px}.world{height:100%}.caption{bottom:35px}.tag{font-size:9px}.brand{font-size:21px}}</style><style>
+#workspace {--rail:190px;position:fixed;inset:0;z-index:3;pointer-events:none;color:#edf2fa;font:14px "Segoe UI",sans-serif}
+#workspace.compact {--rail:64px}
+#workspace button,#workspace input,#workspace aside,#workspace .map-card {pointer-events:auto}
+#workspace button {background:none;color:inherit;border:0}
+#workspace svg {width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.sidebar {position:absolute;inset:0 auto 0 0;width:var(--rail);background:#121b29;border-right:1px solid #314052;padding:20px 9px;display:flex;flex-direction:column;gap:5px}
+.sidebar .sidebrand {margin:0 5px 25px;display:flex;align-items:center;gap:8px;justify-content:space-between;height:35px}
+.sidebrand img {width:96px}
+.sidebar button,.tools button {display:flex;align-items:center;justify-content:flex-start;gap:13px;padding:11px;border-radius:7px;font-size:14px}
+.sidebar button:hover,.tools button:hover {background:#273548!important}
+.sidebar button.selected {background:#302333!important;box-shadow:inset 3px 0 #fa526e;color:white!important}
+.sidebar hr {width:100%;border:0;border-top:1px solid #303a49;margin:9px 0}
+.sidebar .bottom {margin-top:auto}
+.compact .sidebrand img,.compact .sidebar span {display:none}
+#workspace .tools,.map-card {background:#152030f5;border:1px solid #354255;border-radius:10px;box-shadow:0 6px 22px #0004}
+.tools {position:absolute;right:16px;top:20px;padding:4px;display:grid;gap:2px}
+.tools button {padding:9px}
+.map-card {position:absolute;left:calc(var(--rail) + 16px);top:20px;width:min(310px,calc(100% - var(--rail) - 90px));padding:12px}
+.searchrow {display:flex;align-items:center;gap:9px}.searchrow input {width:100%;min-width:0;background:none;color:white;border:0;outline:0;font:inherit}.searchrow:focus-within {outline:1px solid #a1b4c8;outline-offset:4px;border-radius:3px}
+#results button,#drawer button {display:block;text-align:left;width:100%;padding:10px 6px;border-radius:5px}
+#results button:hover,#drawer button:hover {background:#283549}
+#results:not(:empty){margin-top:12px;border-top:1px solid #344151}
+#drawer {top:79px;padding:16px}#drawer h2{font-size:17px;margin:0 0 12px}#drawer label {display:flex;align-items:center;gap:9px;font-size:14px}#drawer p,#results p {font-size:13px;color:#c2cedd;margin:10px 0}
+#coords {position:absolute;right:12px;bottom:31px;padding:6px 9px;border-radius:5px;background:#101926d9;font:11px Consolas,monospace}
+body.in-map header,body.in-map .panel,body.in-map #map::after {display:none}
+body.in-map .world {left:var(--left-rail,190px);width:auto}
+@media(max-width:700px){#workspace,#workspace.compact{--rail:52px}.sidebar{padding:12px 5px}.sidebar .sidebrand img,.sidebar span,.sidebar .sidebrand{display:none}.tools{right:6px;top:12px}.map-card{left:calc(var(--rail) + 7px);top:12px;width:min(290px,calc(100% - 112px))}body.in-map .world{left:52px}#drawer{top:66px}}
+</style>
+<style>
+body.in-map .world {inset:0;width:100%}
+#workspace,#workspace.compact {--rail:80px}
+#workspace .sidebar {inset:16px auto auto 14px;width:76px;padding:8px 5px;background:#fdfdfd;color:#263142;border:1px solid #d7dce4;border-radius:17px;box-shadow:0 12px 38px #05102138;gap:3px}
+.sidebar .sidebrand {margin:0 1px 5px;height:43px;border-radius:10px;background:#172132;justify-content:center;display:flex}
+.sidebar .sidebrand img,.compact .sidebrand img {display:block;width:54px}
+#collapse {display:none}
+#workspace .sidebar button[data-page] {position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 1px;border-radius:10px;font-size:10px;font-weight:600}
+#workspace .sidebar button:hover {background:#eef1f5!important}
+#workspace .sidebar button.selected {background:#f9e8ed!important;color:#a31d40!important;box-shadow:none}
+.sidebar .selected::before {content:"";position:absolute;left:0;top:30%;bottom:30%;width:3px;border-radius:4px;background:#bb284a}
+.sidebar span,.compact .sidebar span {display:block}
+.sidebar hr {border-color:#e1e4e8;margin:3px auto;width:72%}
+
+#workspace .tools {background:white;color:#273343;border:1px solid #d7dce4;box-shadow:0 4px 20px #06142a35;padding:4px;border-radius:12px}
+#workspace .tools button:hover {background:#eef1f5!important}
+#workspace .map-card {left:103px}
+#workspace:focus-within button:focus-visible {outline:2px solid #bb284a;outline-offset:-2px}
+@media(max-width:700px){#workspace .sidebar{left:7px;top:12px;width:57px;padding:5px 2px}.sidebar .sidebrand img{width:44px}#workspace .sidebar button[data-page]{font-size:9px}.sidebar .sidebrand{height:34px}#workspace .map-card{left:72px;width:min(290px,calc(100% - 132px))}}
+</style><style>
+#workspace .sidebrand {background:transparent}
+#workspace #sideLogo {width:29px;height:32px;object-fit:contain}
+.arrival-dot {width:12px;height:12px;border:2px solid white;border-radius:50%;background:#bb293e;box-shadow:0 1px 4px #0004;pointer-events:none}
+.arrival-dot::after {content:"";position:absolute;inset:-3px;border:1px solid #bb293e;border-radius:50%;animation:arrival-pulse 2.8s ease-out infinite}
+@keyframes arrival-pulse {from {transform:scale(.85);opacity:.52} 85%,to {transform:scale(2.2);opacity:0}}
+@media(prefers-reduced-motion:reduce){.arrival-dot::after{animation:none;opacity:.3}}
+</style><style>
+.heat-filters {border:0;padding:0;margin:17px 0 14px}
+.heat-filters legend {font-size:12px;color:#bdc9d8}
+#drawer .heat-filters label {margin:0;padding:9px 0;color:#fff;font-weight:450;cursor:pointer}
+.heat-filters input {width:16px;height:16px;accent-color:#bc3454}
+.heat-legend {display:flex;justify-content:space-between;position:relative;padding-top:13px;color:#d9e3ef;font-size:11px}
+.heat-legend:before {content:'';position:absolute;inset:0 0 auto;height:5px;border-radius:4px;background:linear-gradient(90deg,#30a9bb,#f2d55e,#fa8a41,#c6294a)}
+#drawer .heat-count {font-size:12px;margin:12px 0 0}
+#drawer {max-height:calc(100svh - 94px);overflow-y:auto}
+</style><style>
+#workspace .sidebar {width:54px;padding:6px;gap:4px}
+#workspace .sidebar .sidebrand {margin:0 0 4px;height:39px}
+#workspace .sidebar button[data-tip] {position:relative;justify-content:center;align-items:center;border-radius:10px;width:40px;height:40px;padding:0;margin:0;overflow:visible}
+
+#workspace .sidebar button[data-tip]::after {
+  content:attr(data-tip);position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%);
+  display:block;padding:7px 11px;border-radius:6px;background:#172132;color:#fff;
+  font:500 13px/1.3 "Segoe UI",sans-serif;white-space:nowrap;box-shadow:0 2px 8px #0003;
+  opacity:0;visibility:hidden;pointer-events:none
+}
+#workspace .sidebar button[data-tip]:is(:hover,:focus-visible)::after {opacity:1;visibility:visible}
+#workspace .sidebar {z-index:2}
+#workspace .map-card {left:80px}
+@media(max-width:700px){#workspace .map-card {left:69px}}
+</style><style>
+.basemap-options {display:grid;gap:8px;margin-top:15px}
+#drawer .basemap-option {display:flex;align-items:center;gap:12px;padding:10px;border:1px solid #465267;border-radius:9px;text-align:left}
+#drawer .basemap-option[aria-pressed="true"] {border-color:#fa7088;background:#382638;box-shadow:inset 3px 0 #fa7088}
+#drawer .basemap-option:focus-visible {outline:2px solid #fff;outline-offset:3px}
+#drawer .basemap-option:disabled {opacity:.55;cursor:wait}
+.basemap-option strong,.basemap-option small {display:block}
+.basemap-option small {font-size:12px;line-height:1.4;color:#c2cedd;margin-top:3px}
+.basemap-preview {display:block;flex:none;width:48px;height:48px;border-radius:6px;background:linear-gradient(35deg,transparent 44%,#fff 45% 51%,transparent 52%),linear-gradient(115deg,#c0d6b9 40%,#a1cde4 41% 56%,#deded0 57%)}
+.basemap-preview.outdoors {background:linear-gradient(35deg,transparent 46%,#b4b19b 47% 49%,transparent 50%),linear-gradient(115deg,#334c2d 40%,#264e64 41% 56%,#68704b 57%)}
+.basemap-preview.night {background:linear-gradient(35deg,transparent 44%,#ae8b62 45% 48%,transparent 49%),linear-gradient(115deg,#2a3441 40%,#122639 41% 56%,#3d4651 57%)}
+</style><link rel="stylesheet" href="imagery.css?v=20261115-33"><link rel="stylesheet" href="security.css?v=20261115-33"><link rel="stylesheet" href="theme.css?v=20261115-33"><link rel="stylesheet" href="social.css?v=20261115-33"><link rel="stylesheet" href="models3d.css?v=20261115-33"><link rel="stylesheet" href="camerafilters.css?v=20261115-33"><script type="importmap">{"imports":{"three":"./vendor/three/three.module.js"}}</script></head><body>
+<header><img src="data:image/png;base64,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" alt="HEX360" width="150" style="height:auto;max-width:30vw"></header>
+<main><section class="world" aria-label="Globo terrestre animado"><p id="mapStatus" role="status" style="position:relative;z-index:1;background:#101e25;padding:10px 16px;border-radius:6px">Carregando mapa…</p><div id="map"></div></section>
+<section class="panel"><div class="accent"></div><div id="login"><h1>Acessar plataforma</h1><p>Informe seu e-mail e sua senha para entrar.</p><form id="form" novalidate><label for="email">E-mail</label><div class="field"><input type="email" id="email" autocomplete="off" placeholder="Digite seu e-mail"></div><label for="password">Senha</label><div class="field"><input type="password" id="password" autocomplete="off" placeholder="Digite sua senha"><button type="button" class="eye" id="eye" aria-label="Mostrar senha" aria-pressed="false"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.6"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div><button class="submit">Entrar <span aria-hidden="true">→</span></button></form></div>
+</section></main><div id="workspace" hidden>
+<aside class="sidebar" aria-label="Navegação do mapa">
+<div class="sidebrand"><img id="sideLogo" alt="HEX360" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzYiIHZpZXdCb3g9IjAgMCA3MCA3NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTU2LjI4MDkgMTguOTE3Mkw2Mi40MDc4IDEwLjExMTFINDUuMzI3NkwzOS4yMDA3IDE4LjkxNzJINTYuMjgwOVoiIGZpbGw9IiNCQjI5M0UiLz4KPHBhdGggZD0iTTYzLjUzNTEgOC4zMzkzMkw2OS4zMjY3IDBINjEuNjQ1MkM1NS43MzE3IDAgNTAuMTczNyAyLjk2MDE0IDQ2LjY5ODggNy45NTczN0w0Ni40MzQ2IDguMzM5MzJINjMuNTM1MVoiIGZpbGw9IiNCQjI5M0UiLz4KPHBhdGggZD0iTTQyLjE2NzEgMzkuMjI0NUw1NS4wNDA4IDIwLjY4OTFIMzcuOTUwNEwzMy42MTE4IDI2Ljk0ODlMMjEuODg2MyAxMC4xMTExSDQuNzQ1MDdMNy4xMDIzNyAxMy40OTU2VjEzLjQyMTRMMjUuMDc2NyAzOS4yMzUxTDcuMTAyMzcgNjUuMTIzTDQuODk3NDggNjguMjk1NEwwIDc1LjM0MDNINS42OTAwMkMxMi44NTM0IDc1LjM0MDMgMTkuNTg5OSA3MS43NTQyIDIzLjc5NjUgNjUuNjk2TDMzLjY0MjMgNTEuNTIxMkw0NS4zMjcxIDY4LjMwNkg2Mi40MTc1TDQyLjE2NzEgMzkuMjI0NVoiIGZpbGw9IiMyNDMzNkEiLz4KPC9zdmc+Cg=="><button id="collapse" title="Alternar barra lateral" aria-label="Alternar barra lateral" data-icon="menu"></button></div>
+<button data-page="Mapas" data-icon="globe" aria-label="Mapas" data-tip="Mapas"></button>
+<button data-page="Search & Acquire Images" data-icon="search" aria-label="Imagens de satélite" data-tip="Imagens de satélite"></button>
+<button data-page="Camadas" data-icon="layers" aria-label="Camadas" data-tip="Camadas"></button>
+<hr>
+<button data-page="Security" data-icon="shield" aria-label="Segurança" data-tip="Segurança"></button>
+<button data-page="3D" data-icon="cube" aria-label="3D" data-tip="Modelos 3D"></button>
+<button data-page="Marcadores" data-icon="pin" aria-label="Marcadores" data-tip="Marcadores"></button>
+<hr><button id="logout" data-icon="exit" aria-label="Sair" data-tip="Sair"></button>
+</aside>
+<div class="map-card"><div class="searchrow" data-icon="search"><input id="lookup" aria-label="Buscar local ou coordenadas" placeholder="Buscar local ou coordenadas" autocomplete="off"></div><div id="results"></div></div>
+<section class="map-card" id="drawer" hidden></section>
+<div class="tools" aria-label="Controles do mapa">
+<button id="homeMap" title="Visão global" aria-label="Visão global" data-icon="home"></button>
+<button id="closer" title="Aproximar" aria-label="Aproximar" data-icon="plus"></button>
+<button id="further" title="Afastar" aria-label="Afastar" data-icon="minus"></button>
+<button id="north" title="Orientar para o norte" aria-label="Orientar para o norte" data-icon="compass"></button>
+<button id="fullMap" title="Tela cheia" aria-label="Tela cheia" data-icon="expand"></button>
+</div><output id="coords" aria-label="Coordenadas do centro"></output></div>
+<footer><span>SPECTRA / GEOINT</span><span>ACESSO À PLATAFORMA</span></footer>
+<script>
+const byId=id=>document.getElementById(id);
+byId('eye').onclick=()=>{const field=byId('password'),show=field.type==='password';field.type=show?'text':'password';byId('eye').setAttribute('aria-label',show?'Ocultar senha':'Mostrar senha');byId('eye').setAttribute('aria-pressed',show)};
+const workspace = byId('workspace');
+let activeMap;
+let opened = false;
+let currentPage = 'Mapa';
+let pinMode = false;
+const basemaps = [
+  {id:'streets',name:'Ruas',description:'Ruas, bairros e endereços',style:'streets-v12'},
+  {id:'outdoors',name:'Relevo',description:'Terreno, trilhas e áreas naturais',style:'outdoors-v12'},
+  {id:'light',name:'Claro',description:'Fundo claro para destacar as camadas',style:'light-v11'},
+  {id:'night',name:'Escuro',description:'Fundo escuro para destacar as camadas',style:'dark-v11'}
+];
+let selectedBasemap = 'outdoors';
+const basemapConfig = {showPlaceLabels:true,showRoadLabels:true,showTransitLabels:true,showPointOfInterestLabels:true,showAdminBoundaries:true};
+function layerMatches(id,prop) {
+  if(prop==='showPlaceLabels')return /settlement|country-label|state-label|place-label/.test(id);
+  if(prop==='showAdminBoundaries')return /admin-/.test(id);
+  if(prop==='showPointOfInterestLabels')return /poi-label/.test(id);
+  if(prop==='showRoadLabels')return /road-label/.test(id);
+  return /transit|airport-label/.test(id);
+}
+function applyLayerPreferences() {
+  if(!activeMap)return;
+  for(const layer of activeMap.getStyle().layers || []){
+    const prop=Object.keys(basemapConfig).find(prop=>layerMatches(layer.id,prop));
+    if(prop)activeMap.setLayoutProperty(layer.id,'visibility',opened && basemapConfig[prop]?'visible':'none');
+  }
+}
+let switchingBasemap = false;
+let basemapTimer;
+let basemapError = '';
+function selectBasemap(id) {
+  const next = basemaps.find(item=>item.id===id);
+  if(!next || !mapReady || switchingBasemap || id===selectedBasemap)return;
+  entryFlight++;
+  activeMap.stop();
+  const previous=selectedBasemap;
+  selectedBasemap=id;
+  basemapError='';
+  switchingBasemap=true;
+  mapReady=false;
+  activeMap.setStyle('mapbox://styles/mapbox/'+next.style);
+  showPage('Mapas');
+  basemapTimer=setTimeout(()=>{
+    if(!switchingBasemap)return;
+    const fallback=basemaps.find(item=>item.id===previous);
+    selectedBasemap=previous;
+    basemapError='Não foi possível carregar o mapa escolhido. Restaurando o anterior.';
+    activeMap.setStyle('mapbox://styles/mapbox/'+fallback.style);
+    showPage(currentPage);
+  },20000);
+}
+function showBasemaps(drawer) {
+  const intro=document.createElement('p');intro.textContent='Escolha o mapa base.';drawer.append(intro);
+  const group=document.createElement('div');group.className='basemap-options';
+  group.setAttribute('role','group');group.setAttribute('aria-label','Mapa base');
+  basemaps.forEach(item=>{
+    const button=document.createElement('button');button.type='button';
+    button.className='basemap-option';button.disabled=!mapReady;
+    button.setAttribute('aria-pressed',String(selectedBasemap===item.id));
+    const preview=document.createElement('span');preview.className='basemap-preview '+item.id;preview.setAttribute('aria-hidden','true');
+    const text=document.createElement('span'),name=document.createElement('strong'),description=document.createElement('small');
+    name.textContent=item.name;description.textContent=item.description;text.append(name,description);
+    button.append(preview,text);button.onclick=()=>selectBasemap(item.id);group.append(button);
+  });
+  drawer.append(group);
+  const status=document.createElement('p');status.setAttribute('role','status');
+  status.textContent=basemapError || (mapReady?'Mapa base: '+basemaps.find(item=>item.id===selectedBasemap).name:'Carregando mapa base…');
+  drawer.append(status);
+}
+const places = [
+  ['Brasil',-51.9,-14.2,3],['Brasília',-47.88,-15.79,10],['São Paulo',-46.63,-23.55,10],
+  ['Rio de Janeiro',-43.17,-22.91,10],['Manaus',-60.02,-3.12,10],['Salvador',-38.5,-12.97,10],
+  ['Recife',-34.88,-8.05,10],['Fortaleza',-38.52,-3.73,10],['Buenos Aires',-58.38,-34.6,9],
+  ['Lisboa',-9.14,38.72,10],['Londres',-.12,51.5,10],['Nova York',-74,40.71,10]
+];
+const pins = [];
+const paths = {
+ cube:'m12 3 9 5v9l-9 5-9-5V8z M3 8l9 5 9-5 M12 13v9 M7.5 5.5l9 5',
+ shield:'M12 2 3 6v5c0 6 5 10 9 12 4-2 9-6 9-12V6z M8 12l3 3 5-6',
+ menu:'M4 5h16v14H4z M10 5v14',globe:'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0 M2 12h20 M12 2c-6 5-6 15 0 20 6-5 6-15 0-20',
+ layers:'m2 8 10-5 10 5-10 5z M3 12l9 5 9-5 M3 16l9 5 9-5',bookmark:'M6 3h12v18l-6-4-6 4z',
+ pin:'M19 10c0 5-7 12-7 12S5 15 5 10a7 7 0 1 1 14 0z M14 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0',
+ exit:'M10 4H4v16h6 M9 12h12 M17 8l4 4-4 4',search:'M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0 M15 15l6 6',
+ home:'M3 11l9-8 9 8 M6 10v11h12V10',plus:'M12 5v14 M5 12h14',minus:'M5 12h14',
+ compass:'m17 6-3 8-8 4 4-9z',expand:'M3 9V3h6 M15 3h6v6 M21 15v6h-6 M9 21H3v-6'
+};
+workspace.querySelectorAll('[data-icon]').forEach(el => {
+  el.insertAdjacentHTML('afterbegin','<svg aria-hidden="true" viewBox="0 0 24 24"><path d="'+paths[el.dataset.icon]+'"/></svg>');
+});
+
+function globeView() {
+  const size = Math.min(activeMap.getContainer().clientWidth*.9,innerHeight*.91);
+  return {center:[-48,-9],zoom:Math.log2(size/169),pitch:0,bearing:0};
+}
+// Keep the destination fixed throughout each flight to avoid mid-flight corrections.
+const neighborhoods = [[-49.272,-25.405],[-47.885,-15.824],[-51.201,-30.036],[-46.703,-23.546]];
+const entryCenter = neighborhoods[Math.floor(Math.random()*neighborhoods.length)];
+const entryCamera = {center:entryCenter,zoom:16,bearing:0,pitch:0,duration:4800,curve:1,
+  easing:t=>(1-Math.cos(Math.PI*t))/2};
+function preloadEntry() {
+  if(activeMap && mapReady && !opened && !motionPreference.matches)
+    activeMap.flyTo({...entryCamera,preloadOnly:true});
+}
+let entryFlight = 0;
+let arrivalMarker;
+function flyToBrazil() {
+  const map = activeMap;
+  const ticket = ++entryFlight;
+  const center = entryCenter;
+  arrivalMarker?.remove();
+  arrivalMarker = undefined;
+  map.once('moveend', () => {
+    if (!opened || ticket !== entryFlight) return;
+    const dot = document.createElement('div');
+    dot.className = 'arrival-dot';
+    dot.setAttribute('role','img');
+    dot.setAttribute('aria-label','Ponto de chegada');
+    arrivalMarker = new mapboxgl.Marker({element:dot}).setLngLat(center).addTo(map);
+  });
+  // One uninterrupted camera path, with gentle acceleration and deceleration.
+  // Avoid waiting for tile loading or querying buildings during the animation.
+  map.flyTo(entryCamera);
+}
+function applyMode() {
+  if (!activeMap || !mapReady) return;
+  activeMap.stop();
+  activeMap.resize();
+  applyLayerPreferences();
+  for(const handler of ['dragPan','dragRotate','scrollZoom','doubleClickZoom','touchZoomRotate','keyboard','boxZoom']){
+    activeMap[handler][opened?'enable':'disable']();
+  }
+  if(opened) flyToBrazil();
+}
+
+function pageTitle(page){return {'Search & Acquire Images':'Imagens de satélite',Security:'Segurança'}[page]||page}
+function showPage(page) {
+  if(page!=='Security'&&cameraEventFilters.drawing)cancelCameraDrawing();
+  if(page!=='3D'&&models3D.picking)cancelModel3DPick();
+  const previousPage=currentPage;
+  currentPage=page;
+  syncModels3DVisibility();
+  restoreCameraArea();
+  for(const id of ['security-events-points','security-events-route'])if(activeMap?.getLayer(id))activeMap.setLayoutProperty(id,'visibility',page==='Security'?'visible':'none');
+  pinMode=false;
+  if(activeMap) activeMap.getCanvas().style.cursor=cameraEventFilters.drawing?'crosshair':'';
+  const drawer=byId('drawer');
+  workspace.querySelectorAll('[data-page]').forEach(b=>{
+    b.classList.toggle('selected',b.dataset.page===page);
+    b.setAttribute('aria-label',pageTitle(b.dataset.page));
+  });
+  drawer.classList.toggle('imagery-drawer',page==='Search & Acquire Images');
+  drawer.classList.toggle('security-drawer',page==='Security');
+  drawer.classList.toggle('model3d-drawer',page==='3D');
+  drawer.classList.toggle('territory-drawer',page==='Camadas');
+  drawer.replaceChildren();
+  if(previousPage!==page)drawer.scrollTop=0;
+  drawer.hidden=page==='Mapa';
+  if(drawer.hidden) return;
+  const heading=document.createElement('h2');heading.textContent=pageTitle(page);drawer.append(heading);
+  function action(name,callback) {
+    const b=document.createElement('button');b.textContent=name;b.onclick=callback;b.className=name.startsWith('+')?'sec-primary':'saved-map-card';drawer.append(b);
+  }
+  if(page==='Mapas'){showBasemaps(drawer);return}
+  if(!mapReady){drawer.append('Carregando mapa…');return}
+  if(page==='Camadas'){showTerritoryPanel(drawer);return}
+  if(page==='Search & Acquire Images'){showImageSearch(drawer);return}
+  if(page==='Security'){showSecurity(drawer);return}
+  if(page==='3D'){showModels3D(drawer,previousPage!==page);return}
+  if(page==='Camadas') {
+    for(const [name,prop] of [['Nomes de lugares','showPlaceLabels'],['Limites administrativos','showAdminBoundaries'],['Pontos de interesse','showPointOfInterestLabels']]){
+      const label=document.createElement('label'),input=document.createElement('input');
+      input.type='checkbox';input.checked=basemapConfig[prop];
+      input.onchange=()=>{basemapConfig[prop]=input.checked;applyLayerPreferences()};
+      label.append(input,name);drawer.append(label);
+    }
+  } else {
+    action('+ Marcar ponto no mapa',()=>{pinMode=true;activeMap.getCanvas().style.cursor='crosshair';drawer.lastElementChild.textContent='Clique no mapa para marcar um ponto.'});
+    pins.forEach((pin,i)=>action('Ponto '+(i+1),()=>activeMap.flyTo({center:pin.getLngLat(),zoom:8})));
+    const note=document.createElement('p');note.textContent=pins.length?'':'Nenhum ponto marcado.';drawer.append(note);
+  }
+}
+workspace.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>showPage(currentPage===b.dataset.page?'Mapa':b.dataset.page));
+byId('collapse').onclick=()=>{
+  workspace.classList.toggle('compact');
+  document.body.style.setProperty('--left-rail',workspace.classList.contains('compact')?'64px':'190px');
+  activeMap?.resize();
+};
+byId('homeMap').onclick=()=>activeMap?.flyTo(globeView());
+byId('closer').onclick=()=>activeMap?.zoomIn();
+byId('further').onclick=()=>activeMap?.zoomOut();
+byId('north').onclick=()=>activeMap?.resetNorthPitch();
+byId('fullMap').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+function searchPlaces(){
+  const query=byId('lookup').value.trim(),results=byId('results');results.replaceChildren();
+  if(!query)return;
+  const normalize=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const matches=places.filter(p=>normalize(p[0]).includes(normalize(query))).slice(0,5);
+  const coords=query.split(',').map(t=>t.trim());
+  if(coords.length===2 && coords.every(t=>t!==''&&Number.isFinite(Number(t))) && Math.abs(+coords[0])<=90 && Math.abs(+coords[1])<=180)
+    matches.unshift([query,+coords[1],+coords[0],9]);
+  matches.forEach(([name,lng,lat,zoom])=>{
+    const b=document.createElement('button');b.textContent=name;b.onclick=()=>{
+      activeMap?.flyTo({center:[lng,lat],zoom});byId('lookup').value='';results.replaceChildren();
+    };results.append(b);
+  });
+  if(!matches.length){const p=document.createElement('p');p.textContent='Local não encontrado. Tente latitude, longitude.';results.append(p)}
+}
+byId('lookup').oninput=searchPlaces;
+byId('lookup').onkeydown=e=>{if(e.key==='Enter')byId('results').querySelector('button')?.click();if(e.key==='Escape'){e.target.value='';searchPlaces()}};
+byId('form').onsubmit=e=>{
+  e.preventDefault();opened=true;byId('password').value='';document.body.classList.add('in-map');workspace.hidden=false;
+  showPage('Mapa');updateTerritoryMap();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(!opened)return;
+    applyMode();byId('lookup').focus({preventScroll:true});
+  }));
+};
+byId('logout').onclick=()=>{arrivalMarker?.remove();arrivalMarker=undefined;entryFlight++;opened=false;workspace.hidden=true;document.body.classList.remove('in-map');
+  byId('form').reset();byId('password').type='password';byId('eye').setAttribute('aria-pressed','false');byId('eye').setAttribute('aria-label','Mostrar senha');
+  clearModels3D();clearSecurityMap();securityState.service=null;clearImageSearch();byId('lookup').value='';searchPlaces();pins.splice(0).forEach(p=>p.remove());showPage('Mapa');
+  updateTerritoryMap();
+  if(activeMap && mapReady){basemapConfig.showAdminBoundaries=true;applyMode();activeMap.jumpTo({center:[-53,-13],zoom:Math.log2(Math.min(innerHeight*1.24,innerWidth*1.65)/185),bearing:0,pitch:0})}
+  byId('email').focus();
+};
+
+</script>
+<script src="imagery.js?v=20261115-33"></script>
+<link rel="stylesheet" href="layers.css?v=1">
+<script src="layers.js?v=1"></script>
+<script src="security.js?v=20261115-33"></script>
+<script src="camerafilters.js?v=20261115-33"></script>
+<script src="cameraform.js?v=20261115-33"></script>
+<script src="social.js?v=20261115-33"></script>
+<script src="models3d.js?v=20261115-33"></script>
+<script>
+const MAPBOX_PUBLIC_TOKEN = window.MAPBOX_TOKEN || localStorage.getItem('mapbox_token') || ['pk', 'eyJ1IjoibWF0aGV1c2ZmYXJpYXMtOTgiLCJhIjoiY213NDNtNGJyMDBkODJ5cG1vOXdtbW01eiJ9', 'OosGL1cctbtPaUzj89vBbw'].join('.');
+const statusText = byId('mapStatus');
+const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+let mapReady = false;
+function unavailable(status) {
+  statusText.hidden = false;
+  statusText.textContent = status ? 'Mapbox indisponível (HTTP ' + status + ').' : 'Não foi possível carregar o Mapbox.';
+}
+function startMap() {
+  try {
+    const world = document.querySelector('.world');
+    // A fixed star field outside the globe. Mapbox draws only the moving Earth.
+    let seed = 137;
+    function random() {
+      seed = (seed * 16807) % 2147483647;
+      return seed / 2147483647;
+    }
+    const stars = Array.from({length: 240}, () => {
+      const x = (random()*100).toFixed(2), y = (random()*100).toFixed(2);
+      const alpha = (.22 + random()*.48).toFixed(2);
+      return 'radial-gradient(circle at '+x+'% '+y+'%,rgba(217,235,248,'+alpha+') 0.7px,transparent 1.2px)';
+    });
+    world.style.setProperty('--stars', stars.join(','));
+    function globeZoom() {
+      const size = Math.min(world.clientHeight*1.24, world.clientWidth*1.65);
+      world.style.setProperty('--clear-radius', (size*.52)+'px');
+      return Math.log2(size / 185);
+    }
+    const map = new mapboxgl.Map({
+      container: 'map',
+      accessToken: MAPBOX_PUBLIC_TOKEN,
+      style: 'mapbox://styles/mapbox/'+basemaps.find(item=>item.id===selectedBasemap).style,
+      pixelRatio: 1,
+      fadeDuration: 0,
+      projection: 'globe', center: [-53, -13], zoom: globeZoom(), interactive: false
+    });
+    activeMap = map;
+    initModel3DInteractions(map);
+    map.on('move', () => {
+      if(opened){const center=map.getCenter();const text=center.lat.toFixed(4)+'°, '+center.lng.toFixed(4)+'°';if(byId('coords').textContent!==text)byId('coords').textContent=text}
+    });
+    map.on('mousedown', () => {entryFlight++});
+    map.on('touchstart', () => {entryFlight++});
+    map.on('wheel', () => {entryFlight++});
+    workspace.addEventListener('pointerdown', () => {entryFlight++});
+    map.on('click', e => {
+      if(!opened)return;
+      if(handleCameraAreaClick(e))return;
+      if(handleModel3DClick(e))return;
+      if(!pinMode && handleTerritoryClick(e))return;
+      if(!pinMode)return;
+      pins.push(new mapboxgl.Marker({color:'#be2945'}).setLngLat(e.lngLat).addTo(map));
+      showPage('Marcadores');
+    });
+    map.on('style.load', () => {
+      applyLayerPreferences();
+      restoreImageLayers();
+      restoreSecurityLayers();
+      restoreCameraArea();
+      restoreModels3D();
+      restoreTerritoryLayers();
+      map.setProjection('globe');
+      map.setFog({color:'#ceebff','high-color':'#285890','space-color':'#061426','horizon-blend':0.018,'star-intensity':0});
+      if(switchingBasemap){
+        clearTimeout(basemapTimer);
+        switchingBasemap=false;mapReady=true;statusText.hidden=true;
+        if(opened)showPage(currentPage);else applyMode();
+      }
+    });
+    map.on('resize', () => {if(!opened)map.setZoom(globeZoom())});
+    function rotate() {
+      if (opened || motionPreference.matches || document.hidden || !mapReady) return;
+      const center = map.getCenter();
+      map.easeTo({center: [center.lng + 1.2, center.lat], duration: 1000, easing: t => t});
+    }
+    map.on('moveend', rotate);
+    motionPreference.addEventListener('change', () => motionPreference.matches ? map.stop() : rotate());
+    document.addEventListener('visibilitychange', () => document.hidden ? map.stop() : rotate());
+    map.on('error', event => unavailable(event.error?.status));
+    map.once('load', () => {
+
+        statusText.hidden = true;
+        mapReady = true; restoreTerritoryLayers(); if(opened){applyMode();showPage(currentPage)}else {preloadEntry();rotate()}
+    });
+  } catch { unavailable(); }
+}
+const base = 'https://api.mapbox.com/mapbox-gl-js/v3.33.0/mapbox-gl';
+const css = document.createElement('link');
+css.rel = 'stylesheet'; css.href = base + '.css'; document.head.append(css);
+const js = document.createElement('script');
+js.src = base + '.js'; js.onload = startMap; js.onerror = () => unavailable(); document.head.append(js);
+</script></body></html>
+
+
+
+
+
+
