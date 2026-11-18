@@ -25,7 +25,7 @@ test('aggregation preserves every count and creates closed geographic cells',()=
   const aggregate=data.aggregateTerritory(data.territoryRecords);
   assert.equal(aggregate.points.features.reduce((n,f)=>n+f.properties.count,0),data.territoryRecords.length);
   assert.equal(aggregate.points.features.length,aggregate.polygons.features.length);
-  for(const f of aggregate.polygons.features){const ring=f.geometry.coordinates[0];assert.deepEqual(ring[0],ring[4]);assert.equal(f.properties.synthetic,true);assert(f.properties.count>0)}
+  for(const f of aggregate.polygons.features){const ring=f.geometry.coordinates[0];assert.deepEqual(ring[0],ring[4]);assert.equal(f.properties.active,true);assert(f.properties.count>0)}
 });
 test('crime filters do not filter other themes and periods are nested',()=>{
   const other={...base,enabled:new Set(['pools','dengue'])};assert.deepEqual(data.filterTerritoryRecords({...other,crime:'Roubo'}),data.filterTerritoryRecords(other));
